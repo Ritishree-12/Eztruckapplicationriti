@@ -1,9 +1,14 @@
-// OtpInput.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { TextInput, View, StyleSheet } from 'react-native';
 
 const OtpInput = ({ value, onChangeText, index, autoFocus, onFocus, onBlur }) => {
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current.focus();
+    }
+  }, [autoFocus]);
 
   const handleFocus = () => {
     if (onFocus) {
@@ -18,31 +23,34 @@ const OtpInput = ({ value, onChangeText, index, autoFocus, onFocus, onBlur }) =>
   };
 
   const handleTextChange = (text) => {
-    if (text.length <= 1 && index < 5 && text !== '') {
-      // Move to the next input field
-      inputRef.current.blur();
-      if (onFocus) {
-        onFocus(index + 1);
-      }
-    }
     onChangeText(text);
+
+    if (text.length > 0 && index < 4) {
+      // Move to the next input field
+      setTimeout(() => {
+        if (onFocus) {
+          onFocus(index + 1);
+        }
+      }, 0);
+    }
   };
+
   const inputStyles = {
     ...styles.input,
-    borderColor: value !== '' ? 'red' : 'black', // Change border color to red if value is not empty
-    backgroundColor: value !== '' ? 'mistyrose' : 'white', // Change background color to mistyrose if value is not empty
+    borderColor: value !== '' ? 'red' : 'black',
+    backgroundColor: value !== '' ? 'mistyrose' : 'white',
   };
+
   return (
     <TextInput
-    ref={inputRef}
-    style={inputStyles}
-    value={value}
-    onChangeText={handleTextChange}
-    maxLength={1}
-    keyboardType="numeric"
-    autoFocus={autoFocus}
-    onFocus={handleFocus}
-    onBlur={handleBlur}
+      ref={inputRef}
+      style={inputStyles}
+      value={value}
+      onChangeText={handleTextChange}
+      maxLength={1}
+      keyboardType="numeric"
+      onFocus={handleFocus}
+      onBlur={handleBlur}
     />
   );
 };

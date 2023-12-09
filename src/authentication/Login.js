@@ -11,8 +11,18 @@ import { FontAwesome } from "@expo/vector-icons";
 
 const Login = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
 
   const handleLogin = () => {
+    const phoneRegex = /^[0-9]{10}$/; // Assumes a 10-digit phone number
+    if (!phoneRegex.test(phoneNumber)) {
+      setPhoneNumberError("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    // Clear the error message if phone number is valid
+    setPhoneNumberError("");
+
     // Add your logic for handling login here
     // For now, let's just log the phone number to the console
     console.log("Phone Number:", phoneNumber);
@@ -26,13 +36,18 @@ const Login = ({ navigation }) => {
       <Text style={styles.title}>Login With OTP</Text>
       <View style={styles.formContainer}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, phoneNumberError && styles.inputError]}
           placeholder="Enter your Phone Number"
+          keyboardType="numeric"
+          maxLength={10}
           autoCapitalize="none"
           autoCorrect={false}
           value={phoneNumber}
           onChangeText={(text) => setPhoneNumber(text)}
         />
+        {phoneNumberError ? (
+          <Text style={styles.errorMessage}>{phoneNumberError}</Text>
+        ) : null}
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
@@ -67,7 +82,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
-    // paddingTop: 60,
     backgroundColor: "#fff",
   },
   title: {
@@ -88,6 +102,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: "grey",
     color: "grey",
+  },
+  inputError: {
+    borderColor: "red", // Change border color for error state
+  },
+  errorMessage: {
+    color: "red",
+    marginBottom: 8,
   },
   loginButton: {
     height: 55,
@@ -114,11 +135,11 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    alignItems: "center", // Align the image and text vertically
+    alignItems: "center",
   },
   googleImage: {
-    width: 30, // Adjust the width as needed
-    height: 30, // Adjust the height as needed
+    width: 30,
+    height: 30,
     marginRight: -10,
   },
   googleText: {

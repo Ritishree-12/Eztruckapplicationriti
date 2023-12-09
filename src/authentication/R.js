@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -7,63 +7,19 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Platform,
 } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Icon, CheckBox } from "react-native-elements";
-import { COLORS, FONTS, SPACING } from "../authentication/style";
-
-const commonInputStyle = {
-  height: 60,
-  marginVertical: SPACING.MARGIN_VERTICAL,
-  borderWidth: 1,
-  paddingHorizontal: SPACING.PADDING_HORIZONTAL,
-  borderRadius: 30,
-  borderColor: COLORS.BORDER,
-  color: COLORS.TEXT,
-};
 
 const Registration = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [dob, setDob] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
 
-  const [errors, setErrors] = useState({});
-  const [isFormValid, setIsFormValid] = useState(false);
-
-  useEffect(() => {
-    validateForm();
-  }, [name, email, mobileNumber]);
-
-  const validateForm = () => {
-    let errors = {};
-
-    if (!name) {
-      errors.name = "Name is required.";
-    }
-
-    if (!email) {
-      errors.email = "Email is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = "Email is invalid.";
-    }
-
-    if (!mobileNumber) {
-      errors.mobileNumber = "Mobile number is required.";
-    } else if (
-      !/^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$/.test(
-        mobileNumber
-      )
-    ) {
-      errors.mobileNumber = "Mobile number should only contain numbers.";
-    }
-
-    setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
-  };
-
   const handleSignUp = () => {
+    // Perform your sign-up logic here
+    // For now, let's just display an alert with the entered data
     const userData = {
       name,
       email,
@@ -71,31 +27,11 @@ const Registration = ({ navigation }) => {
       dob,
     };
 
-    if (isFormValid) {
+    if (agreeTerms) {
+      // You can replace this with your actual sign-up logic
       Alert.alert("Sign Up Pressed", JSON.stringify(userData));
     } else {
-      const errorMessages = Object.values(errors).join("\n");
-      Alert.alert("Form Validation Error", errorMessages);
-    }
-
-    if (!agreeTerms) {
-      Alert.alert(
-        "Please agree to the Terms of Service and Privacy Policy."
-      );
-    }
-  };
-
-  const [dob, setDob] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const handleDatePicker = () => {
-    setShowDatePicker(true);
-  };
-
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === "ios");
-    if (selectedDate) {
-      setDob(selectedDate);
+      Alert.alert("Please agree to the Terms of Service and Privacy Policy.");
     }
   };
 
@@ -116,7 +52,6 @@ const Registration = ({ navigation }) => {
           placeholder="Email"
           autoCapitalize="none"
           autoCorrect={false}
-          keyboardType="email-address"
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
@@ -125,23 +60,15 @@ const Registration = ({ navigation }) => {
           placeholder="Your Mobile Number"
           autoCapitalize="none"
           autoCorrect={false}
-          keyboardType="phone-pad"
           value={mobileNumber}
           onChangeText={(text) => setMobileNumber(text)}
         />
-        <TouchableOpacity style={styles.input} onPress={handleDatePicker}>
-          <Text style={{ color: COLORS.TEXT }}>
-            {dob.toDateString()}
-          </Text>
-        </TouchableOpacity>
-        {showDatePicker && (
-          <DateTimePicker
-            value={dob}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-          />
-        )}
+        <TextInput
+          style={styles.input}
+          placeholder="Date Of Birth"
+          value={dob}
+          onChangeText={(text) => setDob(text)}
+        />
         <View style={styles.checkboxContainer}>
           <CheckBox
             title={
@@ -187,23 +114,43 @@ const Registration = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: SPACING.PADDING_HORIZONTAL,
-    backgroundColor: COLORS.BACKGROUND,
+    paddingHorizontal: 10,
+    // paddingTop: 50,
+    backgroundColor: "#fff",
   },
-  title: FONTS.TITLE,
-  terms: FONTS.TERMS,
-  termsHighlight: FONTS.TERMS_HIGHLIGHT,
-  input: commonInputStyle,
-  signupButton: {
-    ...commonInputStyle,
-    height: 60,
-    backgroundColor: COLORS.PRIMARY,
-    borderColor:'red',
-    justifyContent: "center",
-    alignItems: "center",
+  title: {
+    color: "#EE272E",
+    fontWeight: "600",
+    fontSize: 24,
+    // marginBottom: 10,
+    paddingHorizontal: 10,
   },
   formContainer: {
     marginBottom: 20,
+  },
+  terms: {
+    marginVertical: 12,
+    color: "grey",
+  },
+  termsHighlight: {
+    color: "#EE272E",
+  },
+  input: {
+    height: 60,
+    marginVertical: 10,
+    borderWidth: 1,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    borderColor: "grey",
+    color: "grey",
+  },
+  signupButton: {
+    height: 60,
+    marginVertical: 10,
+    borderRadius: 30,
+    backgroundColor: "#EE272E",
+    justifyContent: "center",
+    alignItems: "center",
   },
   signupText: {
     color: "#fff",
@@ -238,11 +185,11 @@ const styles = StyleSheet.create({
     borderColor: "grey",
     flexDirection: "row",
     justifyContent: "space-evenly",
-    alignItems: "center",
+    alignItems: "center", // Align the image and text vertically
   },
   googleImage: {
-    width: 30,
-    height: 30,
+    width: 30, // Adjust the width as needed
+    height: 30, // Adjust the height as needed
     marginRight: -10,
   },
   googleText: {
@@ -261,14 +208,9 @@ const styles = StyleSheet.create({
   signInLink: {
     color: "#EE272E",
   },
-  errorText: {
-    color: "red",
-    fontSize: 14,
-    marginTop: 5,
+  checkboxContainer: {
+    marginVertical: 12,
   },
-  // checkboxContainer: {
-  //   marginVertical: 12,
-  // },
 });
 
 export default Registration;

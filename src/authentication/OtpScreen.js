@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
 import OtpInput from "./OtpInput";
+import { generateOtp, verifyOtp } from '../services/msg91Service';
 
 const OtpScreen = ({navigation}) => {
   const [otp, setOtp] = useState(["", "", "", "", "",]);
@@ -18,6 +19,25 @@ const OtpScreen = ({navigation}) => {
 
   const handleInputFocus = (index) => {
     setFocusedInput(index);
+  };
+  // const handleGenerateOtp = async () => {
+  //   try {
+  //     const response = await generateOtp('USER_PHONE_NUMBER');
+  //     console.log('OTP generated successfully:', response);
+  //     // Handle success, maybe show a message to the user
+  //   } catch (error) {
+  //     // Handle error, show an error message to the user
+  //   }
+  // };
+  
+  const handleVerifyOtp = async () => {
+    try {
+      const response = await verifyOtp('USER_PHONE_NUMBER', 'USER_ENTERED_OTP');
+      console.log('OTP verification successful:', response);
+      // Handle success, maybe navigate to the next screen
+    } catch (error) {
+      // Handle error, show an error message to the user
+    }
   };
 
   return (
@@ -40,7 +60,8 @@ const OtpScreen = ({navigation}) => {
       <Text style={styles.message2}>Resend again</Text> </Text>
       <TouchableOpacity
           style={styles.veryfy}
-          onPress={() => console.log("Sign Up pressed")}
+          // onPress={() => console.log("Sign Up pressed")}
+          onPress={handleVerifyOtp}
         >
           <Text 
           style={styles.verifyText} 
